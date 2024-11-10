@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Profile</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-dashboard {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 250px;
+            background-color: #34495e;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            padding: 10px 15px;
+            display: block;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #2c3e50;
+        }
+
+        /* Highlight the active tab */
+        .sidebar ul li a.active {
+            background-color: #2980b9;
+        }
+
+        /* Main content styles */
+        .dashboard-content {
+            margin-left: 270px;
+            padding: 20px;
+            width: 100%;
+            flex: 1;
+            padding: 20px;
+            background-color: #ecf0f1;
+        }
+
+        /* Profile styles */
+        .profile-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-info {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .profile-info h2 {
+            margin-bottom: 15px;
+            color: #34495e;
+            text-align: center;
+        }
+
+        .profile-info p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #34495e;
+            white-space: nowrap; /* Ensure text stays on one line */
+        }
+
+        .user-image-container {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .user-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #bdc3c7;
+            display: none;
+        }
+
+        .default-image {
+            background-color: #bdc3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+        }
+
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .logout-button {
+            background-color: #c0392b;
+            color: white;
+        }
+
+        .logout-button:hover {
+            background-color: #e74c3c;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-button {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        .edit-button:hover {
+            background-color: #3498db;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 250px; /* Maintain same width for medium screens */
+            }
+
+            .sidebar ul li a {
+                font-size: 16px;
+            }
+
+            .profile-info p {
+                font-size: 14px;
+            }
+
+            .user-image {
+                width: 120px;
+                height: 120px;
+            }
+
+            .default-image {
+                width: 120px;
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Adjust for smaller screens */
+            .sidebar {
+                width: 150px;
+            }
+            .dashboard-content {
+                margin-left: 150px;
+                padding: 10px;
+                white-space: nowrap;
+                
+            }
+
+            .sidebar ul li a {
+                font-size: 14px;
+            }
+
+            .profile-info p {
+                font-size: 12px;
+            }
+
+            .user-image-container {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #ecf0f1;
+                border: 2px solid #ccc;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .user-image {
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
+            }
+
+            .default-image {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-dashboard">
+    <aside class="sidebar">
+        <ul>
+            <li><a href="/dashboard" id="dashboard">Dashboard</a></li>
+            <li><a href="/add-app" id="add-app">Add Apps</a></li>
+            <li><a href="/assigned-tasks" id="assigned-tasks">Assign Tasks</a></li>
+            <li><a href="/users" id="view-users">View Users</a></li>
+            <li><a href="/profile" id="profile">Profile</a></li>
+        </ul>
+    </aside>
+
+    <main class="dashboard-content">
+        <div class="profile-container">
+            <div class="profile-info">
+                <h2>Profile Details</h2>
+                <p><strong>Name:</strong> <span id="userName">Loading...</span></p>
+                <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+                <p><strong>Password:</strong> <span id="userPassword">Loading...</span></p>
+                <p><strong>Role:</strong> <span id="userRole">Loading...</span></p>
+                <div class="button-container">
+                    <button class="button edit-button">Edit</button>
+                    <button class="button logout-button">Logout</button>
+                </div>
+            </div>
+            <!-- <div class="user-image-container">
+                <img src="../media/profile_pics/default-user.png" alt="User Image" class="user-image">
+            </div> -->
+            <div class="user-image-container" onclick="document.getElementById('fileInput').click()">
+                <img id="userImage" class="user-image" alt="User Image">
+                <div id="defaultImage" class="default-image">👤</div>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        const id = localStorage.getItem('id');
+        const role = localStorage.getItem('role');
+
+        const currentPath = window.location.pathname;
+        const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
+        let activeSet = false;
+
+        sidebarLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+                activeSet = true;
+            } else {
+                link.classList.remove('active');
+            }
+        });
+
+        if (!activeSet) {
+            document.getElementById('profile').classList.add('active');
+        }
+
+        // Fetch user profile data from API
+        try {
+            const response = await fetch(`/profile/?id=${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+
+            if (response.ok) {
+                const userData = await response.json();
+                document.getElementById('userName').textContent = userData.name || 'N/A';
+                document.getElementById('userEmail').textContent = userData.email || 'N/A';
+                document.getElementById('userPassword').textContent = userData.password || '********';
+                document.getElementById('userRole').textContent = userData.role || 'User';
+
+                if (userData.profile_image) {
+                    document.getElementById('userImage').src = userData.profile_image;
+                    document.getElementById('userImage').style.display = 'block';
+                    document.getElementById('defaultImage').style.display = 'none';
+                }
+            } else {
+                console.error("Failed to load user profile data.");
+            }
+        } catch (error) {
+            console.error('Error fetching user profile:', error);
+        }
+    });
+
+    async function previewImage(event) {
+        const userImage = document.getElementById('userImage');
+        const defaultImage = document.getElementById('defaultImage');
+        const file = event.target.files[0];
+        if (file) {
+            userImage.src = URL.createObjectURL(file);
+            userImage.style.display = 'block';
+            defaultImage.style.display = 'none';
+            
+            console.log(userImage.src);
+            
+            const formData = new FormData();
+            formData.append('profilepic', file);
+            const userId = localStorage.getItem('id');
+
+            try {
+                const response = await fetch(`/profile/?id=${userId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const updatedData = await response.json();
+                    console.log('Profile picture updated successfully:', updatedData);
+                } else {
+                    console.error('Failed to update profile picture.');
+                }
+            } catch (error) {
+                console.error('Error during profile picture upload:', error);
+            }
+        
+        }
+    }
+
+</script>
+</body>
+</html>
+

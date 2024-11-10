@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Users and Points Earned</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-dashboard {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 250px;
+            background-color: #34495e;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            padding: 10px 15px;
+            display: block;
+            border-radius: 4px;
+            white-space: nowrap; /* Prevent wrapping */
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #2c3e50;
+        }
+
+        /* Highlight the active tab */
+        .sidebar ul li a.active {
+            background-color: #2980b9;
+        }
+
+        /* Main content styles */
+        .dashboard-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #ecf0f1;
+            margin-left: 250px; /* Ensure content does not overlap with the sidebar */
+        }
+
+        /* Table styles */
+        .table-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-container table th,
+        .table-container table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        .table-container table th {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        /* Button styles */
+        .table-container button {
+            padding: 5px 10px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .table-container button:hover {
+            background-color: #3498db;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .dashboard-content {
+                margin-left: 200px;
+            }
+
+            .sidebar ul li a {
+                font-size: 16px;
+            }
+
+            .table-container table th,
+            .table-container table td {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 150px;
+            }
+
+            .dashboard-content {
+                margin-left: 150px;
+                padding: 10px;
+            }
+
+            .sidebar ul li a {
+                font-size: 14px;
+            }
+
+            .table-container table th,
+            .table-container table td {
+                font-size: 12px;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            // Fetch user data from the server
+            const response = await fetch(`/users/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const usersData = data.users; // Adjusted to assume data structure contains users array
+                
+                // Select the tbody element to insert rows
+                const tbody = document.querySelector('.table-container tbody');
+                
+                // Loop through each user and append a row to the table
+                usersData.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.id}</td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>
+                            <img src="${user.profilepic ? user.profilepic : '/static/media/profile_pics/default-user.png'}"
+                                 alt="Profile Picture"
+                                 style="width: 50px; height: 50px; border-radius: 50%;">
+                        </td>
+                        <td><button>View Details</button></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            // Sidebar active link logic
+            const currentPath = window.location.pathname;
+            const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
+            let activeSet = false;
+
+            sidebarLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                    activeSet = true;
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            if (!activeSet) {
+                document.getElementById('view-users').classList.add('active');
+            }
+        });
+    </script>
+</head>
+<body>
+    {% load static %}  <!-- Load static files -->
+    <div class="admin-dashboard">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="/dashboard" id="dashboard">Dashboard</a></li>
+                <li><a href="/add-app" id="add-app">Add Apps</a></li>
+                <li><a href="/assigned-tasks" id="assigned-tasks">Assign Tasks</a></li>
+                <li><a href="/users" id="view-users">View Users</a></li>
+                <li><a href="/profile" id="profile">Profile</a></li>
+            </ul>
+        </aside>
+        <main class="dashboard-content">
+            <div class="table-container">
+                <h2>Users and Points Earned</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Profile Picture</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table rows will be added here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+

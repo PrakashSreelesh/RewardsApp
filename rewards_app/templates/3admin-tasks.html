@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Assign Tasks</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-dashboard {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 250px;
+            background-color: #34495e;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            padding: 10px 15px;
+            display: block;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #2c3e50;
+        }
+
+        /* Highlight the active tab */
+        .sidebar ul li a.active {
+            background-color: #2980b9;
+        }
+
+        /* Main content styles */
+        .dashboard-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #ecf0f1;
+            margin-left: 250px; /* Ensure content does not overlap with the sidebar */
+        }
+
+        /* Table styles */
+        .app-list {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .app-list table th, .app-list table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        .app-list table th {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        /* App logo styling */
+        .app-list table td img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+
+        /* Action buttons with icons */
+        .app-list table td .action-btn {
+            padding: 5px;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .app-list table td .action-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .app-list table td .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .dashboard-content {
+                margin-left: 200px;
+                padding: 10px;
+            }
+
+            .sidebar ul li a {
+                font-size: 16px;
+                white-space: nowrap; /* Prevent text wrapping */
+            }
+
+            .app-list table th, .app-list table td {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 150px;
+            }
+
+            .dashboard-content {
+                margin-left: 150px;
+                padding: 10px;
+            }
+
+            .form-container button {
+                width: 100%; /* Ensure button is within container */
+            }
+
+            .sidebar ul li a {
+                font-size: 14px;
+            }
+
+            .app-list table th, .app-list table td {
+                font-size: 12px;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get the current page path (e.g., '/add-app')
+            const currentPath = window.location.pathname;
+
+            // Select all sidebar links
+            const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
+
+            let activeSet = false; // Flag to check if an active link was set
+
+            // Loop through each link and set the 'active' class if the href matches the current path
+            sidebarLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                    activeSet = true;
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            // If no link was matched, set the default to 'Dashboard'
+            if (!activeSet) {
+                document.getElementById('assigned-tasks').classList.add('active');
+            }
+        });
+    </script>
+</head>
+<body>
+
+<div class="admin-dashboard">
+    <aside class="sidebar">
+        <ul>
+            <li><a href="/dashboard" id="dashboard">Dashboard</a></li>
+            <li><a href="/add-app" id="add-app">Add Apps</a></li>
+            <li><a href="/assigned-tasks" id="assigned-tasks">Assign Tasks</a></li>
+            <li><a href="/users" id="view-users">View Users</a></li>
+            <li><a href="/profile" id="profile">Profile</a></li>
+        </ul>
+    </aside>
+    
+    <main class="dashboard-content">
+        <div class="app-list">
+            <h2>Assigned Tasks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>App Logo</th>
+                        <th>App Name</th>
+                        <th>App URL</th>
+                        <th>Category</th>
+                        <th>Subcategory</th>
+                        <th>Points</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><img src="logo1.png" alt="App Logo"></td>
+                        <td>App 1</td>
+                        <td><a href="#">app1.com</a></td>
+                        <td>Category 1</td>
+                        <td>Subcategory 1</td>
+                        <td>100 Points</td>
+                        <td>
+                            <button class="action-btn" onclick="editTask(1)"><img src="/images/edit-icon.png" alt="Edit"></button>
+                            <button class="action-btn" onclick="deleteTask(1)"><img src="/images/delete-icon.png" alt="Delete"></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="logo2.png" alt="App Logo"></td>
+                        <td>App 2</td>
+                        <td><a href="#">app2.com</a></td>
+                        <td>Category 2</td>
+                        <td>Subcategory 2</td>
+                        <td>200 Points</td>
+                        <td>
+                            <button class="action-btn" onclick="editTask(2)"><img src="/images/edit-icon.png" alt="Edit"></button>
+                            <button class="action-btn" onclick="deleteTask(2)"><img src="/images/delete-icon.png" alt="Delete"></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<script>
+    function editTask(taskId) {
+        // Implement the edit functionality here
+        alert("Edit task with ID: " + taskId);
+    }
+
+    function deleteTask(taskId) {
+        // Implement the delete functionality here
+        if (confirm("Are you sure you want to delete this task?")) {
+            alert("Deleted task with ID: " + taskId);
+        }
+    }
+</script>
+
+</body>
+</html>
+

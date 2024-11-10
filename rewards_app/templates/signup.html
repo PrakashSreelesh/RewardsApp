@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Montserrat', sans-serif;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f2f5;
+      }
+
+      .signup-container {
+        background-color: #ffffff;
+        width: 95%;
+        max-width: 400px;
+        padding: 40px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 24px;
+        color: #333;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+        position: relative;
+      }
+
+      label {
+        font-size: 14px;
+        margin-bottom: 6px;
+        display: block;
+        color: #555;
+      }
+
+      input[type='text'],
+      input[type='email'],
+      input[type='password'] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      input[type='text']:focus,
+      input[type='email']:focus,
+      input[type='password']:focus {
+        outline: none;
+        border-color: #007bff;
+      }
+
+      .form-actions {
+        margin-top: 24px;
+        text-align: center;
+      }
+
+      button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      .login-link {
+        margin-top: 16px;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      .login-link a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .login-link a:hover {
+        text-decoration: underline;
+      }
+
+      @media screen and (max-width: 480px) {
+        .signup-container {
+          padding: 20px;
+        }
+
+        h2 {
+          font-size: 22px;
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+    </style>
+    <script>
+      async function handleSignUp() {
+        // window.location.href = "/dashboard/";
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const response = await fetch('/signup/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              // 'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ name, email, password })
+          });
+
+          const result = await response.json();
+          if (response.status == 200 | response.status == 201) {
+            alert("User Created");
+            window.location.href = "/login/";
+          } else {
+            alert(result.error || 'Login failed');
+          }
+        } catch (error) {
+          console.error("Login error:", error);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="signup-container">
+      <h2>Create Account</h2>
+      <form onsubmit="event.preventDefault(); handleSignUp();">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Enter your full name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <div class="form-actions">
+          <button type="submit">Sign Up</button>
+        </div>
+      </form>
+      <div class="login-link">
+        Already have an account? <a href="\login">Log in</a>
+      </div>
+    </div>
+  </body>
+</html>
